@@ -93,13 +93,28 @@ class ExtrusionCommandCreatedHandler(adsk.core.CommandCreatedEventHandler):
             inputs = cmd.commandInputs
             
            
-           
+            
             global  _profileLength
+            global _profileResources 
+            global _profileTypeDd
+
+            #path to eextension -> make setup at the beginning of the plugin install
+            # talk dirty to me
+            resourcePath ='C:\\Users\DRU\AppData\Roaming\Autodesk\Autodesk Fusion 360\API\AddIns\profile_extruder\Resources\profiles\\'
+            _profileResources = {}
+
+            #inputs here 
+            _profileTypeDd = inputs.addDropDownCommandInput('profileType', 'Profil Types', adsk.core.DropDownStyles.TextListDropDownStyle)
+            profileTypes = _profileTypeDd.listItems
+            for file in os.listdir(resourcePath):
+                if file.endswith(".dxf"):
+                    profileName = (file.replace(".dxf","")).replace("_", " ")
+                    profileTypes.add(profileName, False)
+                    
+                    _profileResources[profileName] = resourcePath+file
 
             
-            #inputs here 
-            _profileType = inputs.addDropDownCommandInput('profileType', 'Profil Types', adsk.core.DropDownStyles.TextListDropDownStyle)
-           
+            
             _profileLength = inputs.addDistanceValueCommandInput('profileLength', 'Profile length', adsk.core.ValueInput.createByReal(1))
             
             
@@ -136,6 +151,7 @@ class ExtrusionCommandExecuteHandler(adsk.core.CommandEventHandler):
         except:
             if _ui:
                 _ui.messageBox('Failed:\n{}'.format(traceback.format_exc()))
+                c
 
 
         
@@ -182,7 +198,8 @@ def drawProfile(design, profile_length):
         # Get dxf import options
 
         #this is not cool yet
-        dxfFileName = 'C:\\Users\DRU\AppData\Roaming\Autodesk\Autodesk Fusion 360\API\AddIns\profile_extruder\Resources\profiles\heron_40x40.dxf'
+        #dxfFileName = 'C:\\Users\DRU\AppData\Roaming\Autodesk\Autodesk Fusion 360\API\AddIns\profile_extruder\Resources\profiles\heron_40x40.dxf'
+        dxfFileName = _profileResources[_profileTypeDd.selectedItem.name]
         dxfOptions = importManager.createDXF2DImportOptions(dxfFileName, newComp.xZConstructionPlane)
         dxfOptions.isViewFit = False
         
@@ -196,7 +213,9 @@ def drawProfile(design, profile_length):
         
         for item in sketch.profiles:
             area = item.areaProperties(adsk.fusion.CalculationAccuracy.MediumCalculationAccuracy).area
-            if area >5.6 :
+            #_ui.messageBox('Area {}'.format(area))
+                
+            if (area > 10.38890 and area < 10.38892) or (area > 5.6692 and area < 5.66925) or (area > 15.79155 and area < 15.79158):
                 extrudes = newComp.features.extrudeFeatures
                 extInput = extrudes.createInput(item, adsk.fusion.FeatureOperations.NewBodyFeatureOperation)
 
