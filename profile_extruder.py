@@ -100,16 +100,19 @@ class ExtrusionCommandCreatedHandler(adsk.core.CommandCreatedEventHandler):
 
             #path to eextension -> make setup at the beginning of the plugin install
             # talk dirty to me
-            resourcePath ='C:\\Users\DRU\AppData\Roaming\Autodesk\Autodesk Fusion 360\API\AddIns\profile_extruder\Resources\profiles\\'
+            #resourcePath ='C:\\Users\DRU\AppData\Roaming\Autodesk\Autodesk Fusion 360\API\AddIns\profile_extruder\Resources\profiles\\'
+            resourcePath = os.getenv("APPDATA")+'\Autodesk\Autodesk Fusion 360\API\AddIns\profile_extruder\Resources\profiles\\'
             _profileResources = {}
 
             #inputs here 
             _profileTypeDd = inputs.addDropDownCommandInput('profileType', 'Profil Types', adsk.core.DropDownStyles.TextListDropDownStyle)
             profileTypes = _profileTypeDd.listItems
+            isFirst = True
             for file in os.listdir(resourcePath):
                 if file.endswith(".dxf"):
                     profileName = (file.replace(".dxf","")).replace("_", " ")
-                    profileTypes.add(profileName, False)
+                    profileTypes.add(profileName, isFirst)
+                    isFirst = False
                     
                     _profileResources[profileName] = resourcePath+file
 
@@ -198,7 +201,7 @@ def drawProfile(design, profile_length):
         # Get dxf import options
 
         #this is not cool yet
-        #dxfFileName = 'C:\\Users\DRU\AppData\Roaming\Autodesk\Autodesk Fusion 360\API\AddIns\profile_extruder\Resources\profiles\heron_40x40.dxf'
+        #dxfFileName = '%appdata%\Autodesk\Autodesk Fusion 360\API\AddIns\profile_extruder\Resources\profiles\heron_40x40.dxf'
         dxfFileName = _profileResources[_profileTypeDd.selectedItem.name]
         dxfOptions = importManager.createDXF2DImportOptions(dxfFileName, newComp.xZConstructionPlane)
         dxfOptions.isViewFit = False
@@ -226,7 +229,7 @@ def drawProfile(design, profile_length):
                 # Create the extrusion.
                 baseExtrude = extrudes.add(extInput)
                 break   
-        newComp.name =('40x40x{}mm-heron'.format(profile_length*10))
+        newComp.name =('{}x{}mm'.format(_profileTypeDd.selectedItem.name,profile_length*10))
         
         return newComp
 
