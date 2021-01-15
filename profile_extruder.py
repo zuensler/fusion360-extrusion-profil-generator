@@ -4,6 +4,7 @@
 import adsk.core, adsk.fusion, adsk.cam, traceback
 import math
 import os
+from sys import platform
 
 # Globals
 _app = adsk.core.Application.cast(None)
@@ -101,7 +102,12 @@ class ExtrusionCommandCreatedHandler(adsk.core.CommandCreatedEventHandler):
             #path to eextension -> make setup at the beginning of the plugin install
             # talk dirty to me
             #resourcePath ='C:\\Users\DRU\AppData\Roaming\Autodesk\Autodesk Fusion 360\API\AddIns\profile_extruder\Resources\profiles\\'
-            resourcePath = os.getenv("APPDATA")+'\Autodesk\Autodesk Fusion 360\API\AddIns\profile_extruder\Resources\profiles\\'
+            resourcePath = ""
+            if platform == "darwin":
+                resourcePath = os.path.expanduser('~/Library/Application Support/Autodesk/Autodesk Fusion 360/API/AddIns/profile_extruder/Resources/profiles/')
+            elif platform == "win32":
+                resourcePath = os.getenv("APPDATA")+'\Autodesk\Autodesk Fusion 360\API\AddIns\profile_extruder\Resources\profiles\\'
+            
             _profileResources = {}
 
             #inputs here 
