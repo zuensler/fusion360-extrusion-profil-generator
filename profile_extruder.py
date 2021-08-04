@@ -224,7 +224,7 @@ def drawProfile(design, profile_length):
             area = item.areaProperties(adsk.fusion.CalculationAccuracy.MediumCalculationAccuracy).area
             #_ui.messageBox('Area {}'.format(area))
                 
-            if (area > 10.38890 and area < 10.38892) or (area > 5.6692 and area < 5.66925) or (area > 15.79155 and area < 15.79158):
+            if (area > 10.38890 and area < 10.38892) or (area > 5.6692 and area < 5.66925) or (area > 15.79155 and area < 15.79158) or (area > 0.59564 and area < 0.59567):
                 extrudes = newComp.features.extrudeFeatures
                 extInput = extrudes.createInput(item, adsk.fusion.FeatureOperations.NewBodyFeatureOperation)
 
