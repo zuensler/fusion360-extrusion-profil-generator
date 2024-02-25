@@ -228,7 +228,7 @@ def drawProfile(design, profile_length):
             area < 0.59567) or (area > 9.74503 and area < 9.74505) or (area > 6.66195 and area <  6.66197) or(area > 21.01280 and 
             area <  21.01282) or(area > 6.57096 and area <  6.57098) or(area > 0.4535673 and area <  0.4535675) or(area > 1.0602874 and area <  1.0602876) or(area > 0.1570795 and 
             area <  0.1570797) or(area > 0.2199114 and area <  0.2199116) or (area > 37.323711 and area <  37.32374) or (area>19.792 and area<19.8) or (area>11.328 and 
-            area<11.33) or (area > 18.0719 and area <  18.0725):
+            area<11.33) or (area > 18.0719 and area <  18.0725) or (area > 3.351 and area <  3.352):
                 extrudes = newComp.features.extrudeFeatures
                 extInput = extrudes.createInput(item, adsk.fusion.FeatureOperations.NewBodyFeatureOperation)
 
